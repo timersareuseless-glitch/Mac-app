@@ -1,0 +1,32 @@
+name: Build Console
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-26
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Show Swift version
+        run: swift --version
+
+      - name: Build Console
+        run: swift build -c release
+
+      - name: Package application
+        run: |
+          mkdir -p Console.app/Contents/MacOS
+          cp .build/release/Console Console.app/Contents/MacOS/Console
+
+      - name: Upload Console.app
+        uses: actions/upload-artifact@v4
+        with:
+          name: Console-macOS
+          path: Console.app
